@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANN Sentiment Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #eef2f3; }
+        h2 { color: #444; }
+        input, button {
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
+            margin: 10px 0;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <h2>ANN Sentiment Checker</h2>
+    <input type="text" id="inputText" placeholder="Enter a sentence...">
+    <button onclick="checkSentiment()">Check Sentiment</button>
+    <div id="result"></div>
+
+    <script>
+        async function checkSentiment() {
+            const text = document.getElementById("inputText").value;
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+            let resultText = "Confidence Scores:\n";
+            for (let key in data) {
+                resultText += `${key}: ${(data[key] * 100).toFixed(2)}%\n`;
+            }
+            document.getElementById("result").innerText = resultText;
+        }
+    </script>
+</body>
+</html>

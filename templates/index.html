@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentiment Checker</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f2f2f2; }
+        h2 { color: #333; }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 500px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Check Sentiment</h2>
+    <input type="text" id="inputText" placeholder="Enter a sentence...">
+    <button onclick="checkSentiment()">Check</button>
+    <div id="result"></div>
+
+    <script>
+    async function checkSentiment() {
+        const text = document.getElementById("inputText").value;
+        const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text })
+        });
+        const data = await response.json();
+
+        let resultText = "Confidence Scores:\n";
+        for (let key in data) {
+            resultText += `${key}: ${data[key] * 100}%\n`;
+        }
+
+        document.getElementById("result").innerText = resultText;
+    }
+</script>
+
+</body>
+</html>
